@@ -30,7 +30,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -182,8 +181,16 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onFilter(Filters filters) {
-        // TODO(developer): Construct new query
-        showTodoToast();
+        Query query = mFirestore.collection("restaurants");
+
+        if (filters.hasCategory()) query = query.whereEqualTo("category", filters.getCategory());
+        if (filters.hasCity()) query = query.whereEqualTo("city", filters.getCity());
+        if (filters.hasPrice()) query = query.whereEqualTo("price", filters.getPrice());
+        if (filters.hasSortBy()) query = query.orderBy(filters.getSortBy(), filters.getSortDirection());
+        query = query.limit(LIMIT);
+
+        mQuery = query;
+        mAdapter.setQuery(query);
 
         // Set header
         mCurrentSearchView.setText(Html.fromHtml(filters.getSearchDescription(this)));
@@ -261,9 +268,5 @@ public class MainActivity extends AppCompatActivity implements
 
         startActivityForResult(intent, RC_SIGN_IN);
         mViewModel.setIsSigningIn(true);
-    }
-
-    private void showTodoToast() {
-        Toast.makeText(this, "TODO: Implement", Toast.LENGTH_SHORT).show();
     }
 }
