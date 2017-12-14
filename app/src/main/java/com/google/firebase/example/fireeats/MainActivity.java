@@ -1,19 +1,19 @@
 /**
  * Copyright 2017 Google Inc. All Rights Reserved.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.google.firebase.example.fireeats;
+package com.google.firebase.example.fireeats;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -35,7 +35,10 @@ import android.widget.Toast;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.example.fireeats.adapter.RestaurantAdapter;
+import com.google.firebase.example.fireeats.model.Restaurant;
+import com.google.firebase.example.fireeats.util.RestaurantUtil;
 import com.google.firebase.example.fireeats.viewmodel.MainActivityViewModel;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -70,7 +73,8 @@ public class MainActivity extends AppCompatActivity implements
     RecyclerView mRestaurantsRecycler;
 
     @BindView(R.id.view_empty)
-    ViewGroup mEmptyView;;
+    ViewGroup mEmptyView;
+    ;
 
     private FirebaseFirestore mFirestore;
     private Query mQuery;
@@ -102,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void initFirestore() {
-        // TODO(developer): Implement
+        mFirestore = FirebaseFirestore.getInstance();
     }
 
     private void initRecyclerView() {
@@ -164,8 +168,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void onAddItemsClicked() {
-        // TODO(developer): Add random restaurants
-        showTodoToast();
+        CollectionReference restaurants = mFirestore.collection("restaurants");
+
+        for (int i = 0; i < 10; i++) {
+            Restaurant restaurant = RestaurantUtil.getRandom(this);
+            restaurants.add(restaurant);
+        }
     }
 
     @Override
